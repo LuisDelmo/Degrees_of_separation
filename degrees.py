@@ -87,53 +87,43 @@ def main():
 
 def shortest_path(source, target):
     
-    num_explored = 0
-    
-    
-    start = Node(state=source,parent=None,action=None)
     frontier = QueueFrontier()
-    frontier.add(start)
-
+    node = Node(state=source,parent=None,action=None)
+    frontier.add(node)
     explored_set = set()
 
+    if source == target:
+        return []
+    
     while True:
-                
+
         if frontier.empty():
-            raise Exception('No Solution')
+            return None
+
         
         node = frontier.remove()
-        num_explored += 1
         explored_set.add(node.state)
     
-        #find neighbors
         for movie_id,person_id in neighbors_for_person(node.state):
             if not frontier.contains_state(person_id) and person_id not in explored_set:
                 child = Node(state=person_id,parent=node,action=movie_id)
-
+                
                 if child.state == target:
-                    person = []
-                    movie = []                
-                    while child.parent is not None:
-                        person.append(child.state)
+                    people = []
+                    movie = []
+                    while child.parent != None:
+                        people.append(child.state)
                         movie.append(child.action)
                         child = child.parent
-                    person.reverse()
+                    people.reverse()
                     movie.reverse()
-                    result = list(zip(movie,person))
+                    result = []
+                    for film,person in zip(movie,people):
+                        result.append((film,person))
                     return result
-
 
                 frontier.add(child)
 
-
-
-
-
-
-
-
-
-    
 
 def person_id_for_name(name):
     """
